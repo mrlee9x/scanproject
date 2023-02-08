@@ -1,0 +1,175 @@
+﻿@using TokenScan.Models;
+@{
+    ViewBag.Title = "DashBoard";
+    Layout = "~/Views/Shared/_LayoutMenu.cshtml";
+}
+
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+        <div class="container-fluid py-1 px-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                    <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+                    <li class="breadcrumb-item text-sm text-dark active" aria-current="page">DashBoard</li>
+                </ol>
+            </nav>
+            <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                    <div class="input-group">
+                        <input type="text" readonly class="form-control" placeholder="Expire Date">
+                    </div>
+                </div>
+                <ul class="navbar-nav  justify-content-end">
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="btn btn-outline-primary btn-sm mb-0 me-3">Report to Admin</a>
+                    </li>
+                    <li class="nav-item d-flex align-items-center">
+                        <a href="/InOut/SignOut" class="nav-link text-body font-weight-bold px-0">
+                            <i class="fa fa-user me-sm-1"></i>
+                            <span class="d-sm-inline d-none">Sign Out</span>
+                        </a>
+                    </li>
+                    <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                        <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                            <div class="sidenav-toggler-inner">
+                                <i class="sidenav-toggler-line"></i>
+                                <i class="sidenav-toggler-line"></i>
+                                <i class="sidenav-toggler-line"></i>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item px-3 d-flex align-items-center">
+                        <a href="javascript:;" class="nav-link text-body p-0">
+                            <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End Navbar -->
+    @if (ViewBag.errorMessage != null)
+    {
+        <div class="container-fluid">
+            <div class="alert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong>Messeger!</strong> @ViewBag.errorMessage.
+            </div>
+        </div>
+        
+    }
+
+    <div class="container-fluid py-4">
+
+        <form method="post" name="myForm" onsubmit="return validateForm()">
+            <div class="row align-items-end">
+                <div class="col">
+                    <div class="input-group">
+                        <textarea name="listAdd" rows="4" class="form-control" aria-label="Wallet address"></textarea>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <button class="btn btn-success" type="submit">Scan Token</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header pb-0">
+
+                    </div>
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0 mx-auto" style="height:600px">
+                            <table class="table align-items-center justify-content-center mb-0 ">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Wallet</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Token Account</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Token Name</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Amount</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                @if (ViewBag.List != null)
+                                {
+                                    foreach (DataShow data in (List<DataShow>)ViewBag.List)
+                                    {
+                                        int count = 1 + data.dataResult.Count();
+                                        <tbody>
+
+                                            <tr class="col-md-3">
+                                                <th rowspan="@count">
+                                                    <p class="text-sm font-weight-bold mb-0">@data.wallet</p>
+
+                                                </th>
+
+                                            </tr>
+                                            @foreach (DataResult item in data.dataResult)
+                                            {
+                                                if (item.tokenAmount != null)
+                                                {
+                                                    <tr class="col-md-9">
+                                                        <td>
+
+                                                            <p class="text-sm font-weight-bold mb-0">@item.tokenAccount</p>
+
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex px-2">
+                                                                <div>
+                                                                    <img src="@item.tokenIcon" class="avatar avatar-sm rounded-circle me-2">
+                                                                </div>
+                                                                <div class="my-auto">
+                                                                    <h6 class="mb-0 text-sm">@item.tokenName</h6>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                        <td>
+                                                            <p class="text-sm font-weight-bold mb-0">@item.tokenAmount.uiAmountString</p>
+
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer pt-3  ">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-start">
+                    <div class="copyright text-center text-sm text-muted text-lg-start">
+
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>,
+                        Edit with <i class="fa fa-heart"></i> by
+                        <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">LEE</a>
+                        for a better web.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</main>
+<script>
+    function validateForm() {
+        var x = document.forms["myForm"]["listAdd"].value;
+        if (x == "" || x == null) {
+            alert("Wallet must be filled out");
+            return false;
+        }
+    }
+</script>
