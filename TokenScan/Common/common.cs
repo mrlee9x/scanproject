@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -12,6 +13,7 @@ namespace TokenScan.Common
 {
     public static class common
     {
+        #region CheckUser
         public static bool CheckUserLogin(string email)
         {
             string cookieUser = CookieHelper.Get("saU");
@@ -21,7 +23,7 @@ namespace TokenScan.Common
             }
             else
             {
-                return false;   
+                return false;
             }
         }
 
@@ -48,10 +50,14 @@ namespace TokenScan.Common
             }
         }
 
+        #endregion
+
+
+        #region forgotMail
         //private static string EMAIL_SERVER = "smtp.gmail.com";
         private static string EMAIL_NAME = "thungios29@gmail.com";
         private static string EMAIL_PASSWORD = "zspvrskigzzqubhc";
-        public static string SendMail(string emailTo , string passNew)
+        public static string SendMail(string emailTo, string passNew)
         {
 
             try
@@ -107,6 +113,48 @@ namespace TokenScan.Common
                 res.Append(valid[rnd.Next(valid.Length)]);
             }
             return res.ToString();
+        }
+        #endregion
+
+
+
+        #region WritePaymentStatus
+
+        // write payment status to data base
+        public static void WritePaymentStatus(string email, string status, string date)
+        {
+            var data = new PaymentStatus();
+            using (var db = new TSCANEntities())
+            {
+                data.email = email;
+                data.paymentStatus = status;
+                data.dateTime = date;
+                db.PaymentStatus1.Add(data);
+                db.SaveChanges();
+                
+            }
+                          
+        }
+
+        #endregion
+
+        // write error log
+        public static void ErrorLogging(Exception ex, string info)
+        {
+            string strPath = @"~\ErrorLog\LogErr.txt";
+            if (!File.Exists(strPath))
+            {
+                File.Create(strPath).Dispose();
+            }
+            using (StreamWriter sw = File.AppendText(strPath))
+            {
+                sw.WriteLine("=============Error Logging =========== "+ info);
+                sw.WriteLine("===========Start============= " + DateTime.Now);
+                sw.WriteLine("Error Message: " + ex.Message);
+                sw.WriteLine("Stack Trace: " + ex.StackTrace);
+                sw.WriteLine("===========End============= " + DateTime.Now);
+
+            }
         }
     }
 }

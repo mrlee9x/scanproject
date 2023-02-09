@@ -25,6 +25,7 @@ namespace TokenScan.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<PaymentStatus> PaymentStatus1 { get; set; }
         public virtual DbSet<UserManager> UserManagers { get; set; }
     }
 }
